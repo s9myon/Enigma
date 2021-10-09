@@ -1,46 +1,57 @@
-class Rotor<T>(private val setting: Int = 1, private val ringOffset: Int = 0) {
-    private var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    private val settings = mapOf(
-        1 to arrayOf("EKMFLGDQVZNTOWYHXUSPAIBRCJ", "R", "Q"),
-        2 to arrayOf("AJDKSIRUXBLHWTMCQGZNPYFVOE", "F", "E"),
-        3 to arrayOf("BDFHJLCPRTXVZNYEIWGAKMUSQO", "W", "V"),
-        4 to arrayOf("ESOVPZJAYQUIRHXLNFTGKDCMWB", "K", "J"),
-        5 to arrayOf("VZBRGITYUPSDNHLXAWMJQOFECK", "A", "Z")
-    )
-    private val turnovers = settings.getValue(setting)[1]
-    val notch = settings.getValue(setting)[2]
-    private var sequence: String = "EKMFLGDQVZNTOWYHXUSPAIBRCJ"
+class Rotor(private val setting: RotorType, private val ringOffset: Int = 0) {
+    private var base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    private var sequence = setting.wiring
+    private val turnovers = setting.turnovers
+    private val notch = setting.notch
     private var turnover = false
 
     init {
         reset()
     }
 
+    /**
+     * Reset the rotor positions
+     */
     private fun reset() {
-        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         sequence = sequenceSettings()
         ringSettings()
     }
 
+    /**
+     * Set the initial sequence
+     */
     private fun sequenceSettings(): String =
-        settings[setting]?.get(0) ?: "EKMFLGDQVZNTOWYHXUSPAIBRCJ"
+        setting.wiring
 
+    /**
+     * Apply the initial ring settings offset
+     */
     private fun ringSettings() {
         for (i in 0..ringOffset) {
             reset()
         }
     }
 
-    fun forward(index: Int) =
-        alphabet.indexOf(sequence[index])
+    /**
+     * Pass [index] from right to left forward through the rotor
+     */
+    fun forward(index: Int) : Int =
+        base.indexOf(sequence[index])
 
-    fun reverse(index: Int) =
-        sequence.indexOf(alphabet[index])
+    /**
+     * Pass [index] from left to right back through the rotor
+     */
+    fun reverse(index: Int) : Int =
+        sequence.indexOf(base[index])
 
+    /**
+     * Cycle the rotor to 1 position
+     */
     fun rotate() {
-        alphabet = alphabet.drop(1) + alphabet[0]
+        base = base.drop(1) + base[0]
         sequence = sequence.drop(1) + sequence[0]
-        if (alphabet[0] in turnovers){
+        if (base[0] == turnovers){
             turnover = true
         }
 
