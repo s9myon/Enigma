@@ -1,3 +1,5 @@
+package com.shudss00.enigma
+
 enum class RotorType(val type: Int, val wiring: String, val turnovers: Char, val notch: Char) {
     RotorI(1, "EKMFLGDQVZNTOWYHXUSPAIBRCJ",  'R', 'Q'),
     RotorII(2, "AJDKSIRUXBLHWTMCQGZNPYFVOE", 'F', 'E'),

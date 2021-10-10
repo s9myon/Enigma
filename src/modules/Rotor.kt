@@ -1,9 +1,14 @@
-class Rotor(private val setting: RotorType, private val ringOffset: Int = 0) {
-    private var base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+package com.shudss00.enigma.modules
+
+import com.shudss00.enigma.ALPHABET
+import com.shudss00.enigma.RotorType
+
+class Rotor(val setting: RotorType, private val ringOffset: Int = 0) {
+    var base = ALPHABET
     private var sequence = setting.wiring
     private val turnovers = setting.turnovers
-    private val notch = setting.notch
-    private var turnover = false
+    val notch = setting.notch
+    var turnover = false
 
     init {
         reset()
@@ -12,24 +17,18 @@ class Rotor(private val setting: RotorType, private val ringOffset: Int = 0) {
     /**
      * Reset the rotor positions
      */
-    private fun reset() {
-        base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        sequence = sequenceSettings()
+    fun reset() {
+        base = ALPHABET
+        sequence = setting.wiring
         ringSettings()
     }
-
-    /**
-     * Set the initial sequence
-     */
-    private fun sequenceSettings(): String =
-        setting.wiring
 
     /**
      * Apply the initial ring settings offset
      */
     private fun ringSettings() {
         for (i in 0..ringOffset) {
-            reset()
+            rotate()
         }
     }
 
